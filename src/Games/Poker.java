@@ -1,9 +1,10 @@
 package Games;
 
 /* 予定中の制作順序。
- * convertIndex作る（使用したカードを保持する。同役時の参照や、手札が6毎以上）
- * 同役時の参照カードを保存可能なストレートメソッド
- * 同様のフラッシュ、ロイヤル、ペア系メソッド、スコア判定統合メソッド
+ * 
+ * 		convertIndex作る（使用したカードを保持する。同役時の参照や、手札が6毎以上）
+ * 		同役時の参照カードを保存可能なストレートメソッド
+ * 		同様のフラッシュ、ロイヤル、ペア系メソッド、スコア判定統合メソッド
  * スコアを参照したディーラーのリロール判定メソッド
  * result関係
  * リトライ関係
@@ -13,7 +14,7 @@ package Games;
  */
 
 public class Poker {
-	public static void main(String[] args) {
+	public static int pokerMain(int coin) {
 		int playerMax = 2;
 		int dealerMax = 2;
 		int handsMax = 5;
@@ -62,12 +63,18 @@ public class Poker {
 						rerollStock[nowPlayer]--;
 					}
 				}
+				return coin;
 			} else {
 				playerAnnounse(nowPlayer, playerName);
 				HandsDisplay(nowPlayer, playerName, hands);
 //					dealerRerollJudge();
+				
+				
 			}
 		}
+		
+		result();
+		
 	}
 
 	public static void playerConf(String[] playerName, int playerMax, int totalPersons) {
@@ -169,7 +176,7 @@ public class Poker {
 //			}
 	}
 
-	// 引く予定のカードがデッキに残ってるか確認するメソッド。
+	// カードを引く前にデッキを確認するメソッド。
 	public static int tempDraw(int[] deck) {
 		while (true) {
 			int tempDraw = new java.util.Random().nextInt(deck.length);
@@ -211,79 +218,81 @@ public class Poker {
 		}
 		return convertedCard;
 	}
-
-	// インデックスの数だけ100倍するメソッド
-	public static int convertDigit(int num, int count) {
-		int convertedDigit = num;
-		for (int i = 0; i < count; i++) {
-			convertedDigit *= 100;
-		}
-		return convertedDigit;
-	}
-
-	public static void scoreClearing(int[][] Score) {
-		if (royalJudge[0] == 4 && flashJudge[0] == 4) {
-
-		}
-//			
-//			if(royal && flash)
-//				score[p][0]=9;
-//			if(strait && flash)
-//				comboScore[p][0] = 8;
-//			if(forcard();)
-//				comboScore[p][0] =7;
-//			if(fullhouse();)
-//				comboScore[p][0] = 8;
-	}
-
-	public static int[] straightJudge(int nowPlayer, int[][] hands) {
-		int[] straight = new int[2]; // 0：成立判定 1:使用した数
-		for (int i = 0; i < hands[nowPlayer].length; i++) { // 基準になる手札
-			straight[0] = 0;
-//			System.out.println("for i 通過");
-			for (int j = 1; j < 5; j++) { // i = k+1ならkをリセットして+2を探す
-				for (int k = 0; k < hands[nowPlayer].length; k++) { // 比べる手札
-//					System.out.println("for k 通過");
-					if ((hands[nowPlayer][i] % 13 + 1) == (hands[nowPlayer][k] % 13 + 1) + j) {
-						straight[0]++;
-//						System.out.println(straight[1]);
-
-						if (straight[0] == 4) {
-							straight[1] += hands[nowPlayer][i];
-							return straight;
-						}
-					}
-				}
-			}
-		}
-		straight[0] = 0;
-		straight[1] = 0;
-		return straight;
-	}
-
-	public static int flashJudge(int nowPlayer, int[][] hands) {
-
-		// フラッシュ判定
-		int flash = 0;
-		for (int i = 1; i < hands[nowPlayer].length; i++) {
-			if (hands[nowPlayer][0] / 13 == hands[nowPlayer][i] / 13) {
-				flash++;
-			} else {
-				break;
-			}
-		}
-		return flash;
-	}
-
-	public static int royal(int nowPlayer, int[][] hands) {
-		int royal = 0;
-		for (int i = 1; i < hands[nowPlayer].length; i++) {
-			if (hands[nowPlayer][0] % 13 == hands[nowPlayer][i] / 13) {
-				royal++;
-			} else {
-				break;
-			}
-		}
-		return royal;
-	}
-}
+//
+//	// インデックスの数だけ100倍するメソッド
+//	public static int convertDigit(int num, int count) {
+//		int convertedDigit = num;
+//		for (int i = 0; i < count; i++) {
+//			convertedDigit *= 100;
+//		}
+//		return convertedDigit;
+//	}
+//	
+//	public static void result(int score[][],int totalPersons) {
+//		for (int i = 0; i < totalPersons; i++) {
+//			scoreClearing(score,i);
+//		}
+//		
+//		
+//	}
+//
+//	public static void scoreClearing(int[][] score, int p) {
+//		if (royalJudge[0] == 4 && flashJudge[0] == 4)
+//			score[p][0] = 900;
+//			score[p][1] = royalJudge[1];//使ったカードのindexだけ保存
+//
+//		if (straightJudge && flashJudge)
+//			Score[p][0] = 800;
+////			if(forcard();)
+////				comboScore[p][0] =7;
+////			if(fullhouse();)
+////				comboScore[p][0] = 8;
+//	}
+//
+//	public static int[] straightJudge(int nowPlayer, int[][] hands) {
+//		int[] straight = new int[2]; // 0：成立判定 1:使用した数
+//		for (int i = 0; i < hands[nowPlayer].length; i++) { // 基準になる手札i
+//			straight[0] = 0;
+//			for (int j = 1; j < 5; j++) { // i=k+1ならkをリセットして+2を探す
+//				for (int k = 0; k < hands[nowPlayer].length; k++) { // 比べる手札k
+//					if ((hands[nowPlayer][i] % 13 + 1) == (hands[nowPlayer][k] % 13 + 1) + j) {
+//						straight[0]++;
+//						if (straight[0] == 4) {
+//							straight[1] += hands[nowPlayer][i];
+//							return straight;
+//						}
+//					}
+//				}
+//			}
+//		}
+//		straight[0] = 0;
+//		straight[1] = 0;
+//		return straight;
+//	}
+//
+//	public static int flashJudge(int nowPlayer, int[][] hands) {
+//
+//		// フラッシュ判定
+//		int flash = 0;
+//		for (int i = 1; i < hands[nowPlayer].length; i++) {
+//			if (hands[nowPlayer][0] / 13 == hands[nowPlayer][i] / 13) {
+//				flash++;
+//			} else {
+//				break;
+//			}
+//		}
+//		return flash;
+//	}
+//
+//	public static int royal(int nowPlayer, int[][] hands) {
+//		int royal = 0;
+//		for (int i = 1; i < hands[nowPlayer].length; i++) {
+//			if (hands[nowPlayer][0] % 13 == hands[nowPlayer][i] / 13) {
+//				royal++;
+//			} else {
+//				break;
+//			}
+//		}
+//		return royal;
+//	}
+//}
