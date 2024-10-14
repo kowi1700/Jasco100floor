@@ -17,7 +17,7 @@ public class Main {
 			break;
 			case 1 :  coin = Oparation.walk(coin);
 			break;
-			case 2 : coin =  Games.HighAndLow.mainMachine(coin);
+			case 2 : coin =  Games.dicepoker.dicePoker(coin);
 			break;
 			}
 			
