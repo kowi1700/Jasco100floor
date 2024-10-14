@@ -1,5 +1,4 @@
 package Jasco;
-//import Games.*;
 
 public class Main {
 	public static void main(String[] args) {
@@ -17,6 +16,8 @@ public class Main {
 			case 0 :  inJasco = Oparation.goOut(coin);
 			break;
 			case 1 :  coin = Oparation.walk(coin);
+			break;
+			case 2 : coin =  Games.HighAndLow.mainMachine(coin);
 			break;
 			}
 			

@@ -8,7 +8,7 @@ public class Oparation {
 		
 		do {
 			System.out.printf("[ 所持金: %d coin ]  なにをする？%n", coin);
-			System.out.println("[0]: 出ていく [1]: 歩く [2]: (故障中) [3]: (故障中) [4]: (故障中)");
+			System.out.println("[0]: 出ていく [1]: 歩く [2]: 「ハイ&ロー」 [3]: (故障中) [4]: (故障中)");
 			String input = new java.util.Scanner(System.in).nextLine();
 			try {
 				selectNum = Integer.parseInt(input);
