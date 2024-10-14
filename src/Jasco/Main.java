@@ -11,13 +11,19 @@ public class Main {
 		System.out.println("-----------------------------------------------------------------");
 		
 		do {
-			selectNum = Oparation.askCommand(coin);
+			selectNum = Operation.askCommand(coin);
 			switch(selectNum) {
-			case 0 :  inJasco = Oparation.goOut(coin);
+			case 0 :  inJasco = Operation.goOut(coin);
 			break;
-			case 1 :  coin = Oparation.walk(coin);
+			case 1 :  coin = GameCorner.selectGame(coin);
 			break;
-			case 2 : coin =  Games.dicepoker.dicePoker(coin);
+			case 2 : System.out.println("<ここには入れません>");
+			break;
+			case 3 : coin = Operation.walk(coin);
+			break;
+			case 4: Operation.hearAnnounce();
+			break;
+			default: System.out.println("[アナウンス]: 申し訳ありません。聞き取れませんでした");
 			break;
 			}
 			

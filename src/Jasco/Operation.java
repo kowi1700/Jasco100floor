@@ -1,6 +1,8 @@
 package Jasco;
+import java.time.LocalTime;
+import java.util.Random;
 
-public class Oparation {
+public class Operation {
 	
 	//選択肢を尋ねるメソッド
 	public static int askCommand(int coin) {
@@ -8,7 +10,7 @@ public class Oparation {
 		
 		do {
 			System.out.printf("[ 所持金: %d coin ]  なにをする？%n", coin);
-			System.out.println("[0]: 出ていく [1]: 歩く [2]: 「ダイスポーカー」 [3]: (故障中) [4]: (故障中)");
+			System.out.println("[0]: 出ていく [1]: ゲームコーナー [2]: (未定) [3]: 歩く [4]: アナウンスを聞く");
 			String input = new java.util.Scanner(System.in).nextLine();
 			try {
 				selectNum = Integer.parseInt(input);
@@ -77,6 +79,31 @@ public class Oparation {
 		} catch(NumberFormatException e) {
 			System.out.println("そんなに、あるけないよ");
 			return coin;
+		}
+	}
+	
+	//アナウンスを聞くメソッド
+	public static void hearAnnounce() {
+		LocalTime currentTime = LocalTime.now();
+		Random random = new Random();
+		
+		System.out.println("アナウンス、でも聞こう");
+		int num = random.nextInt(4);
+		switch(num) {
+		case 0 : 
+			System.out.println("[アナウンス]: 10000コイン貯めて、ハワイへ行こう！ジャスコでは、皆様への日頃の感謝のし");
+			System.out.println("....ザザーーーーーーーーーーーーーーーーーーーー");
+			System.out.println("これ以上、は聞き取れないよ");
+		break;
+		case 1 : 
+			System.out.println("[アナウンス]: ただいまの時刻は" + currentTime + " です");
+		break;
+		case 2 : 
+			System.out.println("[アナウンス]: おカネがないならカラダを使いましょう！アタマがないんですから");
+		break;
+		default : 
+			System.out.println("..................................................");
+			System.out.println("とおくで、小さなわらい声がした");
 		}
 	}
 }
