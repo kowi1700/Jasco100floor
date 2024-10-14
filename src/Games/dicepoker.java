@@ -2,7 +2,7 @@ package Games;
 
 public class dicepoker {
 	public static int dicePoker(int coin) {
-		int playerTotal = 2; // プレイヤー数
+		int playerTotal = 2; // dealer数
 		final int diceTotal = 5; // サイコロの個数 定数
 		final int diceSide = 6; // サイコロの面数 定数
 		int reroll = 2 + 1; // 最大リロール数
@@ -12,6 +12,17 @@ public class dicepoker {
 		String star = ""; // 勝敗履歴
 		int starCount = 0;
 
+		System.out.println("1play 50coin");
+		System.out.println("あそぶ？ 1.あそぶ 2.かえる");
+		int playInput = new java.util.Scanner(System.in).nextInt();
+		switch(playInput) {
+		case 2 :
+			return coin;
+		default :
+			break;
+		}
+		
+		
 		// プレイヤー名入力
 		String[] player = new String[playerTotal];
 		for (int i = 0; i < playerTotal; i++) {
