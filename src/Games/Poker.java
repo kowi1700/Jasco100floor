@@ -1,33 +1,47 @@
 package Games;
 
+/* 予定中の制作順序。
+ * convertIndex作る（使用したカードを保持する。同役時の参照や、手札が6毎以上）
+ * 同役時の参照カードを保存可能なストレートメソッド
+ * 同様のフラッシュ、ロイヤル、ペア系メソッド、スコア判定統合メソッド
+ * スコアを参照したディーラーのリロール判定メソッド
+ * result関係
+ * リトライ関係
+ * オプション（リロール数等）によるコイン倍率の変化
+ * pHandsとdHandsに分けてオプションとして追加
+ * 
+ */
+
 public class Poker {
 	public static void main(String[] args) {
 		int playerMax = 2;
 		int dealerMax = 2;
 		int handsMax = 5;
-		int rerollMax = 3;
+		int pRerollMax = 3;
+		int dRerollMax = 3;
 
-		
 		int totalPersons = playerMax + dealerMax;
 		String[] playerName = new String[] { "p1", "p2", null, null };
 		int[] deck = new int[13 * 4];
 		int[][] hands = new int[totalPersons][handsMax];
 		int[] rerollIndex = new int[handsMax];
 		int[] rerollStock = new int[totalPersons];
-		boolean dealerFlag = false;
 		int[][] score = new int[totalPersons][2];// 0に役、1に数
-		int[][] input = new int[totalPersons][2];// 0にインプット、1にhold flag
+		int[][] input = new int[totalPersons][2];// 0にインプット、1にflag(0:初期値,1:openingAnnounce済,2:hold)
 
-		for (int i = 0; i < totalPersons; i++) {
-			rerollStock[i] = rerollMax;
+		for (int i = 0; i < playerMax; i++) {
+			rerollStock[i] = pRerollMax;
+		}
+		for (int i = playerMax; i < dealerMax; i++) {
+			rerollStock[i] = dRerollMax;
 		}
 
 //		debug
-		int[][] debugHands = { { 1, 3, 4, 5, 2 } };
+		int[][] debugHands = { { 6, 11, 8, 7, 10, 9, 12 } };
 		int debugPlayer = 0;
-		straightJudge(debugPlayer, debugHands);
-		System.out.println("debugおわり");
-		int x = new java.util.Scanner(System.in).nextInt();
+		int[] x = straightJudge(debugPlayer, debugHands);
+		System.out.println(x[0] + "---" + x[1] + "debugおわり");
+		int y = new java.util.Scanner(System.in).nextInt();
 
 		playerConf(playerName, playerMax, totalPersons);
 		openingDraw(deck, hands);
@@ -54,8 +68,6 @@ public class Poker {
 //					dealerRerollJudge();
 			}
 		}
-
-		// 判定
 	}
 
 	public static void playerConf(String[] playerName, int playerMax, int totalPersons) {
@@ -108,9 +120,9 @@ public class Poker {
 		System.out.print("  0.hold ＞");
 	}
 
+	// リロールの枚数とインデックスの最大値チェック
+	// エラーが出たらインプットからループ
 	public static void inputAndErrorCheck(int nowPlayer, int hands[][], int[][] input) {
-		// リロールの枚数とインデックスの最大値チェック
-		// エラーが出たらループ
 		while (true) {
 			input[nowPlayer][1] = new java.util.Scanner(System.in).nextInt();
 			if (input[nowPlayer][1] == 0) {
@@ -157,6 +169,7 @@ public class Poker {
 //			}
 	}
 
+	// 引く予定のカードがデッキに残ってるか確認するメソッド。
 	public static int tempDraw(int[] deck) {
 		while (true) {
 			int tempDraw = new java.util.Random().nextInt(deck.length);
@@ -168,27 +181,50 @@ public class Poker {
 		}
 	}
 
+	// カードindexをdisplay用に変換するメソッド。
 	public static String convertCard(int card) {
 		String[] suit = new String[] { "♠", "♡", "♦", "♧" };
+		String cardMark = "";
 		int cardNum = card % 13 + 1;
-		String convertedCard = suit[card / 13] + (cardNum);
-		if (cardNum < 10) {
-			convertedCard = suit[card / 13] + "0" + (cardNum);
+
+		switch (cardNum) {
+		case 1:
+			cardMark = "A";
+			break;
+		case 11:
+			cardMark = "J";
+			break;
+		case 12:
+			cardMark = "Q";
+			break;
+		case 13:
+			cardMark = "K";
+			break;
+		default:
+			break;
+		}
+		String convertedCard = "";
+		if (cardNum > 10 || cardNum == 1) {
+			convertedCard = suit[card / 13] + (cardMark);
+		} else {
+			convertedCard = suit[card / 13] + (cardNum);
 		}
 		return convertedCard;
 	}
 
-	//手札の数字をindexを1つの数字として保存するためのメソッド
-	public static int covertIndex(int index,int num) {
-
+	// インデックスの数だけ100倍するメソッド
+	public static int convertDigit(int num, int count) {
+		int convertedDigit = num;
+		for (int i = 0; i < count; i++) {
+			convertedDigit *= 100;
+		}
+		return convertedDigit;
 	}
 
 	public static void scoreClearing(int[][] Score) {
-		//
-//			boolean strait =straitFlag();
-//			boolean royal = royalFlag();
-//			boolean flash = flashFlag();
-//			boolean
+		if (royalJudge[0] == 4 && flashJudge[0] == 4) {
+
+		}
 //			
 //			if(royal && flash)
 //				score[p][0]=9;
@@ -201,31 +237,27 @@ public class Poker {
 	}
 
 	public static int[] straightJudge(int nowPlayer, int[][] hands) {
-		// ストレート判定
-		int[] straight = new int[2];
-		int notStraight = 0;
-		for (int i = 0; i < hands[nowPlayer].length; i++) {
+		int[] straight = new int[2]; // 0：成立判定 1:使用した数
+		for (int i = 0; i < hands[nowPlayer].length; i++) { // 基準になる手札
 			straight[0] = 0;
 //			System.out.println("for i 通過");
-			for (int j = 0; j < straight.length; j++) {
-//				System.out.println("for j 通過");
-				for (int k = 0; k < hands[nowPlayer].length; k++) {
+			for (int j = 1; j < 5; j++) { // i = k+1ならkをリセットして+2を探す
+				for (int k = 0; k < hands[nowPlayer].length; k++) { // 比べる手札
 //					System.out.println("for k 通過");
 					if ((hands[nowPlayer][i] % 13 + 1) == (hands[nowPlayer][k] % 13 + 1) + j) {
 						straight[0]++;
-						straight[1] = hands[nowPlayer][k];
-						System.out.println(straight[1]);
+//						System.out.println(straight[1]);
 
-						if(straight[0] ==4) {
-
+						if (straight[0] == 4) {
+							straight[1] += hands[nowPlayer][i];
 							return straight;
 						}
-//						System.out.println("if true 通過");
-						break;
 					}
 				}
 			}
 		}
+		straight[0] = 0;
+		straight[1] = 0;
 		return straight;
 	}
 
@@ -254,7 +286,4 @@ public class Poker {
 		}
 		return royal;
 	}
-
 }
-
-
