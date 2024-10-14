@@ -7,6 +7,7 @@ public class Poker {
 		int handsMax = 5;
 		int rerollMax = 3;
 
+		
 		int totalPersons = playerMax + dealerMax;
 		String[] playerName = new String[] { "p1", "p2", null, null };
 		int[] deck = new int[13 * 4];
