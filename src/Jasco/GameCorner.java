@@ -16,7 +16,7 @@ public class GameCorner {
 						System.out.println("ゲームコーナーを出ます");
 						inGames = false;
 					break;
-					case 1 : coin = Games.HitAndBlow.HitAndBlow(coin);
+					case 1 : coin = Games.HitAndBlow.Hit_and_blow(coin);
 					break;
 					case 2: coin = Games.HighAndLow.mainMachine(coin);
 					break;
