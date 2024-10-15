@@ -2,7 +2,7 @@ package Jasco;
 
 public class Main {
 	public static void main(String[] args) {
-		int coin = 1; //初期の所持コイン
+		int coin = 500; //初期の所持コイン
 		boolean inJasco = true;
 		int selectNum = 0; //選択肢用
 		
