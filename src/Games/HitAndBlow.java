@@ -1,7 +1,7 @@
 package Games;
 
-public class dicepoker {
-	public static int dicePoker(int coin) {
+public class HitAndBlow {
+	public static int HitAndBlow(int coin) {
 //		public static void main(String[] args) {
 
 		int digit = 3;
