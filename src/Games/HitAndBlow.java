@@ -58,7 +58,7 @@ public class HitAndBlow {
 			while (loop) {
 				input = new java.util.Scanner(System.in).nextInt();
 				int[] not = { 2, 3, 4, 5, 6, 7, 8 };
-				if (digitErrorCheck(1, input) || numErrorCheck(not, input)) {
+				if (tools.ErrorChecker.digitErrorCheck(1, input) || tools.ErrorChecker.numErrorCheck(not, input)) {
 					System.out.println("無効な入力です");
 					System.out.print("＞");
 				} else {
@@ -77,7 +77,7 @@ public class HitAndBlow {
 		while (loop) {
 			System.out.print("1~9で入力してください　＞");
 			input = new java.util.Scanner(System.in).nextInt();
-			if (digitErrorCheck(1, input)) {
+			if (tools.ErrorChecker.digitErrorCheck(1, input)) {
 				System.out.println("桁数が妙に多いです。");
 			} else {
 				loop = false;
@@ -160,8 +160,17 @@ public class HitAndBlow {
 		boolean inputLoop = true;
 		while (inputLoop) {
 			System.out.print(ansCount + "答目　＞");
+
 			input = new java.util.Scanner(System.in).nextInt();
-			inputLoop = digitErrorCheck(option[0], input);
+			if (tools.ErrorChecker.digitErrorCheck(option[0], input)) {
+				System.out.println("妙に桁が多いです。");
+			} else if (tools.ErrorChecker.numErrorCheck(tools.ErrorChecker.getBetweenNum(9, option[1]), input)) {
+				System.out.println("使えない数字が含まれてます。");
+			} else if (input == 0) {
+				System.out.println("0は使用できません。");
+			} else {
+				inputLoop = false;
+			}
 		}
 		return input;
 	}
@@ -173,13 +182,13 @@ public class HitAndBlow {
 			ans[ans.length - 1 - i] = input % 10;
 			input /= 10;
 		}
-		//左詰め
-		int count=1;
+		// 左詰め
+		int count = 1;
 		while (ans[0] == 0) {
-			for (int i = 0; i < ans.length-1; i++) {
-				ans[i]=ans[i+1];
+			for (int i = 0; i < ans.length - 1; i++) {
+				ans[i] = ans[i + 1];
 			}
-			ans[ans.length-count]=0;
+			ans[ans.length - count] = 0;
 			count++;
 		}
 	}
@@ -247,26 +256,5 @@ public class HitAndBlow {
 			}
 		}
 		return blow;
-	}
-
-	public static boolean digitErrorCheck(int digit, int target) {
-		int count = 0;
-		while (target != 0) {
-			target /= 10;
-			count++;
-			if (count > digit)
-
-				return true;
-		}
-		return false;
-	}
-
-	public static boolean numErrorCheck(int[] num, int target) {
-		for (int i = 0; i < num.length; i++) {
-			if (target == num[i]) {
-				return true;
-			}
-		}
-		return false;
 	}
 }
