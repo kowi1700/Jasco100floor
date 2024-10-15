@@ -103,7 +103,7 @@ public class Operation {
 		break;
 		default : 
 			System.out.println("..................................................");
-			System.out.println("とおくで、小さなわらい声がした");
+			System.out.println("とおくで、小さなわらい声がした気がする");
 		}
 	}
 }

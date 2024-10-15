@@ -6,7 +6,7 @@ public class GameCorner {
 		
 		if(coin > 0) {
 			do {
-				System.out.printf("[ 所持金: %d coin ]  ゲームコーナーだ。なにで遊ぼうか？%n", coin);
+				System.out.printf("[ 所持金: %d coin ]  ここはゲームコーナーだ。なにで遊ぼうか？%n", coin);
 				System.out.println("[0]: 戻る [1]: 「ダイスポーカー」 [2]: 「ハイ&ロー」 [3]: (未定) [4]: (未定)");
 				String input = new java.util.Scanner(System.in).nextLine();
 				try {
@@ -19,7 +19,8 @@ public class GameCorner {
 					case 1 : coin = Games.dicepoker.dicePoker(coin);
 					break;
 					case 2: coin = Games.HighAndLow.mainMachine(coin);
-					default : System.out.println("[アナウンス]: 申し訳ありません。聞き取れませんでした");
+					break;
+					default : System.out.println("[アナウンス]: 時間は寝るほどあります！もっともっともっと遊びましょう！");
 					break;
 					}
 					

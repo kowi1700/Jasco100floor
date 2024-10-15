@@ -48,8 +48,19 @@ public class HighAndLow {
 	
 	//ランダムな数字を表示するメソッド
 	public static int randomNum() {
-		int num = new java.util.Random().nextInt(14) + 1;
-		System.out.println("カードは...> " + num + " <");
+		int num = new java.util.Random().nextInt(13) + 1;
+		switch(num) {
+		case 13 : System.out.println("カードは...> " + "K" + " <");
+		break;
+		case 12 : System.out.println("カードは...> " + "Q" + " <");
+		break;
+		case 11 : System.out.println("カードは...> " + "J" + " <");
+		break;
+		case 1 :  System.out.println("カードは...> " + "A" + " <");
+		break;
+		default : System.out.println("カードは...> " + num + " <");
+		break;
+		}
 		return num;
 	}
 	
@@ -102,10 +113,17 @@ public class HighAndLow {
 	//ゲームを続けるか尋ねるメソッド
 	public static boolean askContinue() {
 		boolean inGame = true;
-		System.out.println("ゲームを続けるならEnter、やめるならそれ以外のキーを押してね");
-		String input = new java.util.Scanner(System.in).nextLine();
-		if(!input.equals("")) {
-			inGame = false;
+		while(true) {
+			System.out.println("ゲームを続けるならEnter、やめるならQを押してね");
+			String input = new java.util.Scanner(System.in).nextLine();
+			if(input.equals("Q") || input.equals("q")) {
+				inGame = false;
+				break;
+			}else if(input.equals("")) {
+				break;
+			}else {
+				System.out.println("話はちゃんと聞いてね！");
+			}
 		}
 		return inGame;
 	} 
