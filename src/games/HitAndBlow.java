@@ -1,8 +1,15 @@
-/*更新予定　
- * resultやリトライ周り
- * オプションボーナス再調整
- * 連続プレイ時に平均クリア手数表示
+/* 	未実装
+ * リトライ数・平均クリア手数
+ * リタイア
  * maxNum2桁
+ 
+ 
+ * 	未対応バグとか
+ * 
+ * 
+ * 
+ * 
+ * 
  */
 
 package games;
@@ -12,48 +19,105 @@ public class HitAndBlow {
 
 		int digit = 3;
 		int maxNum = 9;
-		int[] option = { digit, maxNum };
 
 		double bet = 0;
-		boolean betLoop = true;
+		int turn = 0;
 		int ansLoop = 0;
-		int ansCount = 0;
+		boolean retry = true;
+
+		int[] option = { digit, maxNum };
+		double rateRatio = 1.0;
+		double beginRate = 5.0;
+		double turnRate = 1.0;
+		double digitRate = 3.0;
+		double maxNumRate = 10.0;
+		double[] rates = { beginRate, turnRate, digitRate, maxNumRate, rateRatio };
 
 		opening(coin);
-		while (betLoop) {
-			bet = betting(); // bet入力
-			if (bet == 0) // 退出判定
+		while (retry) {
+			do {
+				bet = betting(coin);
+				if (bet == 0)
+					return coin;
+			} while (bettingCheck(bet, coin, option, rates));
+
+			int[] num = new int[option[0]];
+			int[] ans = new int[option[0]];
+			coin -= bet;
+			setup(coin, bet, option, rates);
+			generateNum(num, option);
+			// debug(num);
+
+			while (ansLoop == 0) {
+				turn++;
+				ansConvert(ans, ansInput(bet, turn, option, rates));
+				countDisplay(num, ans);
+				ansLoop = endCheck(hitCount(num, ans), coin, reward(bet, turn + 1, option, rates), option);
+			}
+			if (ansLoop == 1) {
+				allLostEnd();
+				coin = 0;
 				return coin;
-			betLoop = bettingCheck(bet, coin, option); // 不正入力でループ
+			}
+			result(coin, reward(bet, turn, option, rates));
+			coin += (reward(bet, turn, option, rates));
+			retry = retryInput();
 		}
-
-		int[] num = new int[option[0]];
-		int[] ans = new int[option[0]];
-		coin -= bet;
-		setup(coin, bet);
-		generateNum(num, option);
-//		debug(num);
-
-		while (ansLoop == 0) {
-			ansCount++;
-			ansConvert(ans, ansInput(bet, ansCount, option));
-			countDisplay(num, ans);
-			ansLoop = endCheck(hitCount(num, ans), coin, reward(bet, ansCount + 1, option), option);
-		}
-		if (ansLoop == 1) {
-			allLostEnd();
-			coin = 0;
-			return coin;
-		}
-		result(reward(bet, ansCount, option));
-		coin += (reward(bet, ansCount, option));
 		return coin;
 	}
 
-	public static void option(int[] option) {
+	public static void ruleMenu(int[] option, double[] rates) {
+		while (true) {
+			System.out.println("-------------------------------");
+			System.out.println("1.hit_and_blow について");
+			System.out.println("2.bet_rateの詳細");
+			System.out.print("9.戻る　＞");
+
+			String input = new java.util.Scanner(System.in).nextLine();
+			System.out.println("-------------------------------");
+
+			switch (input) {
+			case "1":
+				hitAndBlowRule();
+				break;
+			case "2":
+				betRateRule(option, rates);
+				break;
+			case "9":
+				return;
+			}
+		}
+	}
+
+	public static void hitAndBlowRule() {
+		System.out.println("hit_and_blow について：");
+		System.out.println("　開始すると複数の数字がランダムに生成されます。");
+		System.out.println("　複数の中で同じ数字が生成されることはありません。");
+		System.out.println("　プレイヤーは生成された全ての数と順序を当ててください。");
+		System.out.println("　数が含まれていた場合にはblow、順序も正しい場合にはhitが表示されます。");
+		System.out.println("　生成される個数はdigit、数の最大値はmaxNumで設定できます。");
+
+		System.out.println("＜　enter　＞");
+		new java.util.Scanner(System.in).nextLine();
+	}
+
+	public static void displayRule() {
+
+	}
+
+	public static void betRateRule(int[] option, double[] rates) {
+		System.out.println("[ get reward ] = ( bet ) + bet * beginRate" + rates[0] + " * option bonus (現在:"
+				+ getOptionBonus(option, rates) + ")");
+		System.out.println("					- bet / turnRate" + rates[1] + " * turn");
+		System.out.println("[option bonus] = digit / " + rates[2] + " * (maxNum + 1) / " + rates[3]);
+		System.out.println("＜　enter　＞");
+		new java.util.Scanner(System.in).nextLine();
+	}
+
+	public static void option(int[] option, double[] rates) {
 		while (true) {
 			System.out.println("--------------------------");
-			System.out.println("option bonus:" + Math.round(getOptionBonus(option) * 100.0) / 100.0 + "倍");
+			System.out.println("option bonus:" + Math.round(getOptionBonus(option, rates) * 100.0) / 100.0 + "倍");
 			System.out.println("0.digit:" + option[0]);
 			System.out.println("1.maxNum:" + option[1]);
 			System.out.println("9.戻る");
@@ -62,6 +126,7 @@ public class HitAndBlow {
 			int input = 9;
 			while (loop) {
 				input = new java.util.Scanner(System.in).nextInt();
+
 				int[] not = { 2, 3, 4, 5, 6, 7, 8 };
 				if (tools.ErrorChecker.digitErrorCheck(1, input) || tools.ErrorChecker.numsErrorCheck(not, input)) {
 					System.out.println("無効な入力です");
@@ -95,8 +160,8 @@ public class HitAndBlow {
 		option[optionIndex] = input;
 	}
 
-	public static double getOptionBonus(int[] option) {
-		return Double.valueOf(option[0]) / 3 * (Double.valueOf(option[1]) + 1) / 10;
+	public static double getOptionBonus(int[] option, double[] rates) {
+		return Double.valueOf(option[0]) / rates[2] * (Double.valueOf(option[1]) + 1) / rates[3];
 	}
 
 	public static void debug(int[] num) {
@@ -106,25 +171,30 @@ public class HitAndBlow {
 	}
 
 	public static void opening(int coin) {
-		System.out.println("-----------------------------");
+		System.out.println("------------------------------------------");
 		System.out.println();
 		System.out.println();
-		System.out.println("	HIT AND BLOW");
+		System.out.println("		HIT AND BLOW");
 		System.out.println();
-		System.out.println();
-		System.out.print("所持coin:" + coin + "　		please enter　＞");
-		String temp = new java.util.Scanner(System.in).nextLine();
-		System.out.println("-----------------------------");
+		System.out.print("　					please enter＞");
+		new java.util.Scanner(System.in).nextLine();
+
 	}
 
-	public static int betting() {
-		System.out.print("betするcoin数を入力して！（0.やめる 999.オプションメニュー）　＞");
+	public static int betting(int coin) {
+		System.out.println("------------------------------------------");
+		System.out.println(" 所持:" + coin + "coin");
+		System.out.println("　0.やめる　888.ルール　999.オプション");
+		System.out.print("  その他の数字：betting!　＞");
 		return new java.util.Scanner(System.in).nextInt();
 	}
 
-	public static boolean bettingCheck(double bet, int coin, int[] option) {
+	public static boolean bettingCheck(double bet, int coin, int[] option, double[] rates) {
 		if (bet == 999) {
-			option(option);
+			option(option, rates);
+			return true;
+		} else if (bet == 888) {
+			ruleMenu(option, rates);
 			return true;
 		} else if (bet > coin) {
 			System.out.println("手持ちのcoinをこえています。");
@@ -136,9 +206,12 @@ public class HitAndBlow {
 		return false;
 	}
 
-	public static void setup(int coin, double bet) {
+	public static void setup(int coin, double bet, int[] option, double[] rates) {
+		System.out.println("-----------------------------------");
+		System.out.println("bonus:" + Math.floor(getOptionBonus(option, rates) * 100) / 100 + "倍 (digit[" + option[0]
+				+ "]　maxNum[" + option[1] + "])");
 		System.out.println(" -" + (int) bet + "coin");
-		System.out.print(" 所持coin:" + coin);
+		System.out.print(" 所持:" + coin + "coin");
 	}
 
 	public static void generateNum(int[] num, int[] option) {
@@ -158,13 +231,13 @@ public class HitAndBlow {
 		}
 	}
 
-	public static int ansInput(double bet, int ansCount, int[] option) {
-		System.out.println("　現在の報酬：+" + reward(bet, ansCount, option) + "coin　　");
+	public static int ansInput(double bet, int ansCount, int[] option, double[] rates) {
+		System.out.println("　現在の報酬：(+" + bet + ") + " + reward(bet, ansCount, option, rates) + "coin　　");
 		System.out.println();
 		int input = 0;
 		boolean inputLoop = true;
 		while (inputLoop) {
-			System.out.print(ansCount + "答目　＞");
+			System.out.print(" " + ansCount + "答目　＞");
 
 			input = new java.util.Scanner(System.in).nextInt();
 			if (tools.ErrorChecker.digitErrorCheck(option[0], input)) {
@@ -182,7 +255,6 @@ public class HitAndBlow {
 
 	public static void ansConvert(int[] ans, int input) {
 		// 1桁ずつ抜き取ってans配列に移動
-//		System.out.println(input);// debug
 		for (int i = 0; i < ans.length; i++) {
 			ans[ans.length - 1 - i] = input % 10;
 			input /= 10;
@@ -199,13 +271,6 @@ public class HitAndBlow {
 	}
 
 	public static void countDisplay(int[] num, int[] ans) {
-//		for (int i = 0; i < ans.length; i++) { // debug
-//			System.out.print(num[i] + " "); // debug
-//		}
-//		System.out.println();				//debug
-//		for (int i = 0; i < ans.length; i++) { // debug
-//			System.out.print(ans[i] + " "); // debug
-//		}
 		System.out.print(" " + hitCount(num, ans) + "hit " + blowCount(num, ans) + "blow ");
 	}
 
@@ -225,19 +290,40 @@ public class HitAndBlow {
 		System.out.println();
 	}
 
-	public static void result(int getCoin) {
+	public static void result(int coin, int reward) {
 		System.out.println();
-		if (getCoin > 0)
-			System.out.println("you are winner!");
-		if (getCoin < 0)
+		System.out.println();
+		if (reward < 0) {
 			System.out.println("you are looser...");
-		if (getCoin == 0)
+			System.out.println(" 所持:" + coin + "coin　" + reward);
+			return;
+		}
+		if (reward > 0)
+			System.out.println("you are winner!");
+		if (reward == 0)
 			System.out.println("Nothing happened, right?");
-		System.out.println();
+		System.out.println(" 所持:" + coin + "coin　	 + " + reward);
+		return;
 	}
 
-	public static int reward(double bet, int ansCount, int[] option) {
-		double reward = bet + bet * 5 * getOptionBonus(option) - bet / 1 * Double.valueOf(ansCount);
+	public static boolean retryInput() {
+		System.out.print(" もう一回する？");
+		while (true) {
+			System.out.print("	1.yes 2.no　＞");
+			int input = new java.util.Scanner(System.in).nextInt();
+			switch (input) {
+			case 1:
+				return true;
+			case 2:
+				return false;
+			default:
+				System.out.print("入力が変かも");
+			}
+		}
+	}
+
+	public static int reward(double bet, int ansCount, int[] option, double[] rates) {
+		double reward = bet * rates[0] * getOptionBonus(option, rates) - bet / rates[1] * Double.valueOf(ansCount);
 		return (int) reward;
 	}
 
