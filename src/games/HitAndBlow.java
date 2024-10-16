@@ -1,3 +1,10 @@
+/*更新予定　
+ * resultやリトライ周り
+ * オプションボーナス再調整
+ * 連続プレイ時に平均クリア手数表示
+ * maxNum2桁
+ */
+
 package games;
 
 public class HitAndBlow {
@@ -230,7 +237,7 @@ public class HitAndBlow {
 	}
 
 	public static int reward(double bet, int ansCount, int[] option) {
-		double reward = bet * 5 * getOptionBonus(option) - bet / 5 * Double.valueOf(ansCount);
+		double reward = bet + bet * 5 * getOptionBonus(option) - bet / 1 * Double.valueOf(ansCount);
 		return (int) reward;
 	}
 

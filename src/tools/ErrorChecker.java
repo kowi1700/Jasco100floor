@@ -27,7 +27,7 @@ public class ErrorChecker {
 				nums[i] = max - i - 1;
 			}
 		}else {
-			System.out.println("エラー: 無効な引数(max, min)");
+//			System.out.println("エラー: 無効な引数(max, min)");	//もらった配列をnumsErrorCheckに入れて使ってたので一旦offにします！
 		}
 		for(int value :nums) {
 			System.out.println(value); //確認用
