@@ -1,11 +1,24 @@
-/* 	未実装
+/* 	未対応バグとか
+ * ?
+ * 
+ * 
+
+ * 　未改善
+ * betエラー時の再入力ルート・レイアウト
+ * 所持coinとrewardの表記・レイアウト (結果の確定までcoinは変動しないほうがわかりやすそう)
+ * 
+ * 
+
+ * 
+ * 未実装
+ * 必要最小手数の表示
  * リトライ数・平均クリア手数
  * リタイア
  * maxNum2桁
  
  
- * 	未対応バグとか
- * 
+ 
+ * 	？
  * 
  * 
  * 
@@ -18,7 +31,7 @@ public class HitAndBlow {
 	public static int Hit_and_blow(int coin) {
 
 		int digit = 3;
-		int maxNum = 9;
+		int maxNum = 10;
 
 		double bet = 0;
 		int turn = 0;
@@ -48,6 +61,8 @@ public class HitAndBlow {
 			generateNum(num, option);
 			// debug(num);
 
+			ansLoop = 0;
+			turn = 0;
 			while (ansLoop == 0) {
 				turn++;
 				ansConvert(ans, ansInput(bet, turn, option, rates));
@@ -161,7 +176,7 @@ public class HitAndBlow {
 	}
 
 	public static double getOptionBonus(int[] option, double[] rates) {
-		return Double.valueOf(option[0]) / rates[2] * (Double.valueOf(option[1]) + 1) / rates[3];
+		return Double.valueOf(option[0]) / rates[2] * (Double.valueOf(option[1]) ) / rates[3];
 	}
 
 	public static void debug(int[] num) {
@@ -244,8 +259,6 @@ public class HitAndBlow {
 				System.out.println("妙に桁が多いです。");
 			} else if (tools.ErrorChecker.numsErrorCheck(tools.ErrorChecker.getBetweenNum(9, option[1]), input)) {
 				System.out.println("使えない数字が含まれてます。");
-			} else if (input == 0) {
-				System.out.println("0は使用できません。");
 			} else {
 				inputLoop = false;
 			}
