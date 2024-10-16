@@ -1,4 +1,4 @@
-package Jasco;
+package jasco;
 import java.time.LocalTime;
 import java.util.Random;
 

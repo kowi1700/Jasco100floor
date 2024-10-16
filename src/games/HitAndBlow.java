@@ -1,6 +1,4 @@
-package Games;
-
-import java.util.Iterator;
+package games;
 
 public class HitAndBlow {
 	public static int Hit_and_blow(int coin) {
@@ -58,7 +56,7 @@ public class HitAndBlow {
 			while (loop) {
 				input = new java.util.Scanner(System.in).nextInt();
 				int[] not = { 2, 3, 4, 5, 6, 7, 8 };
-				if (tools.ErrorChecker.digitErrorCheck(1, input) || tools.ErrorChecker.numErrorCheck(not, input)) {
+				if (tools.ErrorChecker.digitErrorCheck(1, input) || tools.ErrorChecker.numsErrorCheck(not, input)) {
 					System.out.println("無効な入力です");
 					System.out.print("＞");
 				} else {
@@ -164,7 +162,7 @@ public class HitAndBlow {
 			input = new java.util.Scanner(System.in).nextInt();
 			if (tools.ErrorChecker.digitErrorCheck(option[0], input)) {
 				System.out.println("妙に桁が多いです。");
-			} else if (tools.ErrorChecker.numErrorCheck(tools.ErrorChecker.getBetweenNum(9, option[1]), input)) {
+			} else if (tools.ErrorChecker.numsErrorCheck(tools.ErrorChecker.getBetweenNum(9, option[1]), input)) {
 				System.out.println("使えない数字が含まれてます。");
 			} else if (input == 0) {
 				System.out.println("0は使用できません。");

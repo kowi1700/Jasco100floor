@@ -1,4 +1,4 @@
-package Games;
+package games;
 
 public class HighAndLow {
 	public static int mainMachine(int coin) {
