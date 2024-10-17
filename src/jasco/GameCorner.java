@@ -7,7 +7,7 @@ public class GameCorner {
 		if(coin > 0) {
 			do {
 				System.out.printf("[ 所持金: %d coin ]  ここはゲームコーナーだ。なにで遊ぼうか？%n", coin);
-				System.out.println("[0]: 戻る [1]: 「ヒット＆ブロー」 [2]: 「ハイ&ロー」 [3]: 「ブラックジャック」 [4]: (未定)");
+				System.out.println("[0]: 戻る [1]: 「ヒット＆ブロー」 [2]: 「ハイ&ロー」 [3]: 「ブラックジャック」 [4]: 奥にすすむ");
 				String input = new java.util.Scanner(System.in).nextLine();
 				try {
 					int selectNum = Integer.parseInt(input);
@@ -21,6 +21,8 @@ public class GameCorner {
 					case 2 : coin = games.HighAndLow.mainMachine(coin);
 					break;
 					case 3 : coin = games.BlackJack.mainMachine(coin);
+					break;
+					case 4 : coin = GameCorner2.selectGame(coin);
 					break;
 					default : System.out.println("[アナウンス]: 時間は寝るほどあります！もっともっともっと遊びましょう！");
 					break;
