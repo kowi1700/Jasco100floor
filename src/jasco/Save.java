@@ -48,7 +48,7 @@ public class Save {
 		}
 		System.out.print("coinをご返却致します");
 		if (temp > coin)
-			System.out.println(" +" + coin + "coin　 please enter　＞");//temp-coinにしたかったんですけどバグが出ちゃって、一旦これで投げます。
+			System.out.println(" +" + (temp - coin) + "coin　 please enter　＞");
 		if (coin > temp)
 			System.out.println(temp - coin + "coin	please enter　＞");
 		if (coin == temp)
