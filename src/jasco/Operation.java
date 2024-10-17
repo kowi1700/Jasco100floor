@@ -10,7 +10,7 @@ public class Operation {
 		
 		do {
 			System.out.printf("[ 所持金: %d coin ]  なにをする？%n", coin);
-			System.out.println("[0]: 出ていく [1]: ゲームコーナー [2]: (未定) [3]: 歩く [4]: アナウンスを聞く");
+			System.out.println("[0]: 出ていく [1]: ゲームコーナー [2]: (未定) [3]: 歩く [4]: アナウンスを聞く [5]: コインルーム");
 			String input = new java.util.Scanner(System.in).nextLine();
 			try {
 				selectNum = Integer.parseInt(input);

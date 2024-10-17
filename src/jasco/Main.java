@@ -23,6 +23,8 @@ public class Main {
 			break;
 			case 4: Operation.hearAnnounce();
 			break;
+			case 5: coin = Save.saveMenu(coin);
+			break;
 			default: System.out.println("[アナウンス]: 申し訳ありません。聞き取れませんでした");
 			break;
 			}
