@@ -52,11 +52,11 @@ public class Save {
 	public static int load(int coin) {
 		System.out.print("4桁のIDを入力してください　＞");
 		String strId = new java.util.Scanner(System.in).nextLine();
-		int id = Integer.parseInt(strId);
+		double id = Integer.parseInt(strId);
 		System.out.print("PASSを入力してください　＞");
 		String hexPass = new java.util.Scanner(System.in).nextLine();
-		int pass = Integer.parseInt(hexPass, 16);
-		int temp = (pass - 222 * id) / (1207 + id * 10);
+		double pass = Integer.parseInt(hexPass, 16);
+		double temp = (pass - 222 * id) / (1207 + id * 10);
 		if (temp % 1 != 0) {
 			System.out.println("不正な入力です");
 			return coin;
