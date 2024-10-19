@@ -55,6 +55,7 @@ public class JascoQuiz{
 		System.out.println("足りないのは？");
 		String input = new java.util.Scanner(System.in).nextLine();
 		
+		//inputが長すぎる場合のキャッチを書く
 		
 		//正解数を取得
 		for(int i = 0; i < answer.length; i++) {
