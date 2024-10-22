@@ -20,7 +20,7 @@ public class Game {
 		dealer.drawCard(deck);
 		dealer.drawCard(deck);
 		
-		System.out.println("プレイヤーの手札: " + player);
+		System.out.println("プレイヤーの手札: " + player.toString());
 		System.out.println("ディーラーの手札: " + dealer.toString());
 		
 		//プレイヤーのターン
@@ -46,10 +46,16 @@ public class Game {
 		}
 		
 		if(dealer.isBusted() || player.getHandValue() > dealer.getHandValue()) {
+			System.out.println("プレイヤーの手札: " + player.toString());
+			System.out.println("ディーラーの手札: " + dealer.toString());
 			System.out.println("あなたの 勝ち！");
 		}else if(player.getHandValue() == dealer.getHandValue()){
+			System.out.println("プレイヤーの手札: " + player.toString());
+			System.out.println("ディーラーの手札: " + dealer.toString());
 			System.out.println("引き分けだよ");
 		}else {
+			System.out.println("プレイヤーの手札: " + player.toString());
+			System.out.println("ディーラーの手札: " + dealer.toString());
 			System.out.println("ディーラーの 勝ち");
 		}
 	}
